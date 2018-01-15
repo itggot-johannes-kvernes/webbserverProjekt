@@ -20,4 +20,4 @@ Slim::Engine.set_options pretty: true, sort_attrs: false
 # enable :sessions
 
 # Run the app
-run Server
+run App
