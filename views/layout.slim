@@ -5,5 +5,19 @@ html
 
     body
 
+    header
+        a.header_link href="/"
+            h1.header_text To-Do
+        - if session[:user] != nil
+            div.logged_in_as_box
+                p.logged_in_as_text Logged in as #{session[:user].username}
+                form action="/logout" method="post"
+                    button type="submit" Log out
+        - else
+            form.login_form action="login" method="post"
+                input> type="text" name="username" placeholder="Username"
+                input> type="password" name="password" placeholder="Password"
+                button type="submit" Log in
+
     .content
         == yield
