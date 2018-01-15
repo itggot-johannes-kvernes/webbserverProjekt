@@ -1,6 +1,12 @@
 ## Database
 /db/*.sqlite
 
+## Vagrant
+.vagrant
+
+## Gemfile
+*.lock
+
 *.gem
 *.rbc
 /.config
