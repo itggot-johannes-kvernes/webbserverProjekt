@@ -7,3 +7,6 @@ Here is a short list of things one should be able to do on the site:
 * Read posts
 * Befriend others
 * Join groups
+
+ER-graph:
+![ER_graph_v1](https://github.com/itggot-johannes-kvernes/webbserverProjekt/raw/master/ER-diagram_webbserverProjekt_v1.jpg "ER-graph v1")
