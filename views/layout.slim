@@ -2,12 +2,13 @@ doctype html
 html
     head
         title Site name
+        link rel="stylesheet" type="text/css" href="/css/main.css"
 
     body
 
     header
         a.header_link href="/"
-            h1.header_text To-Do
+            h1.header_text Site name
         - if session[:user] != nil
             div.logged_in_as_box
                 p.logged_in_as_text Logged in as #{session[:user].username}
