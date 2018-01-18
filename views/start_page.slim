@@ -1,1 +1,4 @@
-h1 This is a start page
+- if session[:logged_in] != nil
+    / slim for start_page here
+- else
+    a href="/create_user" Create new user

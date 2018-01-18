@@ -8,4 +8,10 @@ class App < Sinatra::Base
 
     end
 
+    get '/create_user' do
+
+        slim :'create_user'
+
+    end
+
 end
