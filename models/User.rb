@@ -5,6 +5,26 @@ class User
         @username = username
     end
 
+    def self.login(username, password, app)
+
+        db = SQLite3::Database.open('db/db.sqlite')
+        hash = db.execute('SELECT password FROM users WHERE username IS ?', username)
+        if hash != []
+            hash = hash[0][0]
+            stored_password = BCrypt::Password.new(hash)
+            if stored_password == password
+                user_id = db.execute('SELECT id FROM users WHERE username IS ?', username)
+                app.session[:user] = User.new(user_id, username)
+                app.redirect '/'
+            else
+                app.redirect '/create_user'
+            end
+        else
+            app.redirect '/create_user'
+        end
+
+    end
+
     def self.new_user(username, password, key, app)
 
         db = SQLite3::Database.open('db/db.sqlite')
