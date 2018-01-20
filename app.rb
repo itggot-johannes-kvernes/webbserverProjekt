@@ -18,4 +18,8 @@ class App < Sinatra::Base
         User.new_user(params["username"], params["password"], params["key"], self)
     end
 
+    get '/unable_to_create_user' do
+        slim :'unable_to_create_user'
+    end
+
 end
