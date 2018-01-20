@@ -8,7 +8,7 @@ Bundler.require
 require_relative 'app.rb'
 
 # Load models
-# require_relative 'models/List.rb'
+require_relative 'models/User.rb'
 
 # Make sure PUT, PATCH, and DELETE work
 use Rack::MethodOverride
