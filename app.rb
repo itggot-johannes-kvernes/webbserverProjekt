@@ -14,4 +14,8 @@ class App < Sinatra::Base
 
     end
 
+    post '/new_user' do
+        User.new_user(params["username"], params["password"], params["key"], self)
+    end
+
 end
