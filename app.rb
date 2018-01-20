@@ -22,4 +22,13 @@ class App < Sinatra::Base
         slim :'unable_to_create_user'
     end
 
+    post '/login' do
+        User.login(params["username"], params["password"], self)
+    end
+
+    post '/logout' do
+        session.destroy
+        redirect '/'
+    end
+
 end
