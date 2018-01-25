@@ -45,7 +45,7 @@ class User
         if username_is_unused && key == "4242"
             hash = BCrypt::Password.create(password)
             db.execute('INSERT INTO users (username, password) VALUES (?, ?)', [username, hash])
-            app.redirect '/'
+            User.login(username, password, app)
         else
             app.redirect '/unable_to_create_user'
         end
