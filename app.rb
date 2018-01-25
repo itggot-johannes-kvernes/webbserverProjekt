@@ -31,4 +31,8 @@ class App < Sinatra::Base
         redirect '/'
     end
 
+    get '/p_posts' do
+        Post.start_page_posts(session[:user_id], self)
+    end
+
 end

@@ -9,6 +9,7 @@ require_relative 'app.rb'
 
 # Load models
 require_relative 'models/User.rb'
+require_relative 'models/Post.rb'
 
 # Make sure PUT, PATCH, and DELETE work
 use Rack::MethodOverride
