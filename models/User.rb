@@ -15,8 +15,9 @@ class User
             hash = hash[0][0]
             stored_password = BCrypt::Password.new(hash)
             if stored_password == password
-                user_id = db.execute('SELECT id FROM users WHERE username IS ?', username)
-                app.session[:user] = User.new(user_id, username)
+                user_id = db.execute('SELECT id FROM users WHERE username IS ?', username)[0][0]
+                app.session[:user_id] = user_id
+                app.session[:username] = username
                 app.redirect '/'
             else
                 app.redirect '/create_user'
