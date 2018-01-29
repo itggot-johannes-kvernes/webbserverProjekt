@@ -52,4 +52,15 @@ class User
         end
     end
 
+    def self.username_from_posts(posts, app)
+        db = SQLite3::Database.open('db/db.sqlite')
+        users = []
+
+        for i in posts
+            users << db.execute('SELECT username FROM users WHERE id IS ?', i[3])[0][0]
+        end
+
+        return users
+    end
+
 end

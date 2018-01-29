@@ -3,9 +3,13 @@ class App < Sinatra::Base
     enable :sessions
 
     get '/' do
-
-        slim :'start_page'
-
+        if session[:user_id]
+            @posts = Post.start_page_posts(session[:user_id], self)
+            @users = User.username_from_posts(@posts, self)
+            slim :'start_page'
+        else
+            slim :'create_user'
+        end
     end
 
     get '/create_user' do
@@ -29,10 +33,6 @@ class App < Sinatra::Base
     post '/logout' do
         session.destroy
         redirect '/'
-    end
-
-    get '/p_posts' do
-        Post.start_page_posts(session[:user_id], self)
     end
 
 end

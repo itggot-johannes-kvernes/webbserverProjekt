@@ -1,5 +1,10 @@
-- if session[:user]
-    / slim for start_page here
+.new_post
     
-- else
-    a href="/create_user" Create new user
+
+- for i in @posts
+    .post
+        .post_header
+            h2 = @users[@posts.index(i)]
+            h4.date = i[1]
+        .post_content
+            p = i[2]
