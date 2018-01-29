@@ -35,4 +35,8 @@ class App < Sinatra::Base
         redirect '/'
     end
 
+    post '/new_post' do
+        Post.new_post(session[:user_id], params["text"], self)
+    end
+
 end

@@ -10,4 +10,11 @@ class Post
         return posts
     end
 
+    def self.new_post(user_id, text, app)
+        db = SQLite3::Database.open('db/db.sqlite')
+        date = Time.now.strftime("%Y-%m-%d %H:%M")
+        db.execute('INSERT INTO posts (upload_date, text, user_id) VALUES (?, ?, ?)', [date, text, user_id])
+        app.redirect '/'
+    end
+
 end

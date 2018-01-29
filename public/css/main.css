@@ -49,13 +49,30 @@ header {
 }
 
 .new_post {
+    background-color: #141414;
+    width: 500px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
 
+.new_post form {
+    display: grid;
+    grid-template-columns: 392px 16px 92px;
+}
+
+.new_post input {
+    grid-column: 1/2;
+}
+
+.new_post button {
+    grid-column: 3/4;
 }
 
 .post {
     background-color: #141414;
     width: 500px;
     padding: 0 16px;
+    margin-top: 16px;
 }
 
 .post_header {
