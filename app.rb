@@ -50,7 +50,7 @@ class App < Sinatra::Base
 
     post '/users/add_friend' do
 
-        if params["name"] == "" || params["name"]
+        if params["name"] == "" || params["name"] == nil
             
         else
             User.add_friend(session[:user_id], params["name"])
