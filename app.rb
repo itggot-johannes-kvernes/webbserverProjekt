@@ -39,4 +39,12 @@ class App < Sinatra::Base
         Post.new_post(session[:user_id], params["text"], self)
     end
 
+    get '/users/:id' do
+        if session[:user_id]
+            @usernames = User.all_usernames_except_own_and_friends(session[:user_id])
+            slim :'profile'
+        else
+            redirect '/'
+        end
+    end
 end
