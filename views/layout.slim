@@ -11,7 +11,7 @@ html
             h1.header_text Site name
         - if session[:user_id]
             div.logged_in_as_box
-                p.logged_in_as_text Logged in as #{session[:username]}
+                a.logged_in_as_text href="/users/#{session[:user_id]}" Logged in as #{session[:username]}
                 form action="/logout" method="post"
                     button type="submit" Log out
         - else
