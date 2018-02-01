@@ -67,4 +67,11 @@ class User
         db = SQLite3::Database.open('db/db.sqlite')
         return db.execute('SELECT username FROM users WHERE id NOT IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) AND id NOT IN (SELECT user2_id FROM friendships WHERE user1_id IS ?) AND id IS NOT ?', [user_id, user_id, user_id])
     end
+
+    def self.add_friend(user1_id, name)
+        db = SQLite3::Database.open('db/db.sqlite')
+        user2_id = db.execute('SELECT id FROM users WHERE username IS ?', name)
+        db.execute('INSERT INTO friendships (user1_id, user2_id) VALUES (?, ?)', [user1_id, user2_id])
+    end
+
 end
