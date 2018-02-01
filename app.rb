@@ -40,7 +40,7 @@ class App < Sinatra::Base
     end
 
     get '/users/:id' do
-        if session[:user_id]
+        if session[:user_id] == params["id"].to_i
             @usernames = User.all_usernames_except_own_and_friends(session[:user_id])
             slim :'profile'
         else
