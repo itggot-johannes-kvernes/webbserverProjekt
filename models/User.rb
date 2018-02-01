@@ -52,7 +52,7 @@ class User
         end
     end
 
-    def self.username_from_posts(posts, app)
+    def self.username_from_posts(posts)
         db = SQLite3::Database.open('db/db.sqlite')
         users = []
 

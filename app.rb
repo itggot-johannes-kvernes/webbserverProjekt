@@ -4,8 +4,8 @@ class App < Sinatra::Base
 
     get '/' do
         if session[:user_id]
-            @posts = Post.start_page_posts(session[:user_id], self)
-            @users = User.username_from_posts(@posts, self)
+            @posts = Post.start_page_posts(session[:user_id])
+            @users = User.username_from_posts(@posts)
             slim :'start_page'
         else
             slim :'create_user'
