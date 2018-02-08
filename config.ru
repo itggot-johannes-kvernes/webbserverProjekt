@@ -1,5 +1,6 @@
 # Use bundler to load gems
 require 'bundler'
+require 'byebug'
 
 # Load gems from Gemfile
 Bundler.require
