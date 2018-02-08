@@ -48,7 +48,7 @@ class App < Sinatra::Base
         end
     end
 
-    post '/users/add_friend' do
+    post '/add_friend' do
 
         if params["name"] == "" || params["name"] == nil
             

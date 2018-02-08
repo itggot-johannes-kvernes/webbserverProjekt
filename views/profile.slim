@@ -1,8 +1,8 @@
 .align_left
     h2 = session[:username]
     h3 Add friends
-    form action="add_friend" method="post"
-        input type="text" name="name" placeholder="Username" list="names"
+    form action="/add_friend" method="post"
+        input type="text" name="name" placeholder="Username" list="names" autocomplete="off"
         datalist id="names"
             - for i in @usernames
                 option = i[0]
