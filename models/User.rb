@@ -74,4 +74,12 @@ class User
         db.execute('INSERT INTO friendships (user1_id, user2_id) VALUES (?, ?)', [user1_id, user2_id])
     end
 
+    def self.delete(user_id)
+        db = SQLite3::Database.open('db/db.sqlite')
+        db.execute('DELETE FROM memberships WHERE user_id IS ?', user_id)
+        db.execute('DELETE FROM friendships WHERE user1_id IS ? OR user2_id IS ?', [user_id, user_id])
+        db.execute('DELETE FROM posts WHERE user_id IS ?', user_id)
+        db.execute('DELETE FROM users WHERE id IS ?', user_id)
+    end
+
 end

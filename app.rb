@@ -58,4 +58,15 @@ class App < Sinatra::Base
 
         redirect "/users/#{session[:user_id]}"
     end
+
+    post '/delete_account' do
+        if params["confirmation"] == "YES"
+            User.delete(session[:user_id])
+            session.destroy
+            redirect '/'
+        else
+            redirect "/users/#{session[:user_id]}"
+        end
+        
+    end
 end

@@ -8,3 +8,10 @@
                 option = i[0]
         br
         button type="submit" Add
+    br
+    br
+    h3 Delete account
+    form action="/delete_account" method="post"
+        input type="text" name="confirmation" placeholder="Type 'YES' to confirm"
+        br
+        button type="submit" Delete
