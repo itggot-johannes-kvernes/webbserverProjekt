@@ -40,11 +40,18 @@ class App < Sinatra::Base
     end
 
     get '/users/:id' do
-        if session[:user_id] == params["id"].to_i
+        if !session[:user_id]
+            redirect '/'
+        elsif session[:user_id] == params["id"].to_i
+            @friends = User.friends(session[:user_id])
+            @groups = User.groups(session[:user_id])
             @usernames = User.all_usernames_except_own_and_friends(session[:user_id])
             slim :'profile'
         else
-            redirect '/'
+            @friends = User.friends(params["id"].to_i)
+            @groups = User.groups(params["id"].to_i)
+            @username = User.username_from_id(params["id"].to_i)
+            slim :'other_user'
         end
     end
 

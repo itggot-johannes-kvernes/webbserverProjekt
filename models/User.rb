@@ -63,6 +63,11 @@ class User
         return users
     end
 
+    def self.username_from_id(user_id)
+        db = SQLite3::Database.open('db/db.sqlite')
+        return db.execute('SELECT username FROM users WHERE id IS ?', user_id)[0][0]
+    end
+
     def self.all_usernames_except_own_and_friends(user_id)
         db = SQLite3::Database.open('db/db.sqlite')
         return db.execute('SELECT username FROM users WHERE id NOT IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) AND id NOT IN (SELECT user2_id FROM friendships WHERE user1_id IS ?) AND id IS NOT ?', [user_id, user_id, user_id])
