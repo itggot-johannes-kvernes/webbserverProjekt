@@ -82,4 +82,14 @@ class User
         db.execute('DELETE FROM users WHERE id IS ?', user_id)
     end
 
+    def self.friends(user_id)
+        db = SQLite3::Database.open('db/db.sqlite')
+        return db.execute('SELECT id, username FROM users WHERE id IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) OR id IN (SELECT user2_id FROM friendships WHERE user1_id IS ?) AND id IS NOT ?', [user_id, user_id, user_id])
+    end
+
+    def self.groups(user_id)
+        db = SQLite3::Database.open('db/db.sqlite')
+        return db.execute('SELECT id, name FROM groups WHERE id IN (SELECT group_id FROM memberships WHERE user_id IS ?)', user_id)
+    end
+
 end

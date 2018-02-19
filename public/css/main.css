@@ -89,10 +89,6 @@ header {
     border-bottom: 1px solid black;
 }
 
-.post_content {
-
-}
-
 .date {
     position: absolute;
     margin: 0;
@@ -104,4 +100,18 @@ header {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+}
+
+.side_bar {
+    width: 300px;
+    height: calc(100vh - 102px);
+    position: absolute;
+    right: 16px;
+    background-color: #141414;
+    box-shadow: 0 0 8px 2px rgb(0, 0, 0);
+    padding: 0 16px;
+}
+
+.list_style_type_none {
+    list-style-type: none;
 }
