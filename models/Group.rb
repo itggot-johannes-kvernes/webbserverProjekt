@@ -8,4 +8,10 @@ class Group
         db = SQLite3::Database.open('db/db.sqlite')
         return db.execute('SELECT name FROM groups WHERE id NOT IN (SELECT group_id FROM memberships WHERE user_id IS ?)', user_id)
     end
+
+    def self.create(name, app)
+        db = SQLite3::Database.open('db/db.sqlite')
+        db.execute('INSERT INTO groups (name) VALUES (?)', name)
+        app.redirect "/users/#{app.session[:user_id]}"
+    end
 end
