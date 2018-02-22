@@ -10,6 +10,23 @@
         button type="submit" Add
     br
     br
+    h3 Join group
+    form action="/join_group" method="post"
+        input type="text" name="name" placeholder="Group name" list="groups" autocomplete="off"
+        datalist id="groups"
+            - for i in @group_names
+                option = i[0]
+        br
+        button type="submit" Join
+    br
+    br
+    h3 Create group
+    form action="/create_group" method="post"
+        input type="text" name="group_name" placeholder="Group name" autocomplete="off"
+        br
+        button type="submit" Create
+    br
+    br
     h3 Delete account
     form action="/delete_account" method="post"
         input type="text" name="confirmation" placeholder="Type 'YES' to confirm"
@@ -19,11 +36,11 @@
 .side_bar
     h3 Groups
     ul.list_style_type_none
-        - for i in @groups
+        - for i in @users_groups
             li
                 a href="/groups/#{i[0]}" = i[1]
     h3 Friends
     ul.list_style_type_none
-        - for i in @friends
+        - for i in @users_friends
             li
                 a href="/users/#{i[0]}" = i[1]
