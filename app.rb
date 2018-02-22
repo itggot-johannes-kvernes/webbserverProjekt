@@ -77,4 +77,12 @@ class App < Sinatra::Base
         end
         
     end
+
+    post '/create_group' do
+        Group.create(params["group_name"], self)
+    end
+
+    post '/join_group' do
+        Group.join(session[:user_id], params["name"], self)
+    end
 end
