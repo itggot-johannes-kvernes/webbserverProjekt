@@ -79,6 +79,7 @@ header {
     padding: 0 16px;
     margin-top: 16px;
     box-shadow: 0 0 8px 2px rgb(0, 0, 0);
+    overflow-wrap: break-word;
 }
 
 .post_header {
