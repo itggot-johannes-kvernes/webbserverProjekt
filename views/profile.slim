@@ -1,11 +1,11 @@
 .align_left
-    h2 = session[:username]
+    h2 = @user.name
     h3 Add friends
     form action="/add_friend" method="post"
         input type="text" name="name" placeholder="Username" list="names" autocomplete="off"
         datalist id="names"
-            - for i in @usernames
-                option = i[0]
+            - for user in @unfriended_users
+                option = user.name
         br
         button type="submit" Add
     br
@@ -14,8 +14,8 @@
     form action="/join_group" method="post"
         input type="text" name="name" placeholder="Group name" list="groups" autocomplete="off"
         datalist id="groups"
-            - for i in @group_names
-                option = i[0]
+            - for group in @unjoined_groups
+                option = group.name
         br
         button type="submit" Join
     br
@@ -36,11 +36,11 @@
 .side_bar
     h3 Groups
     ul.list_style_type_none
-        - for i in @users_groups
+        - for group in @users_groups
             li
-                a href="/groups/#{i[0]}" = i[1]
+                a href="/groups/#{group.id}" = group.name
     h3 Friends
     ul.list_style_type_none
-        - for i in @users_friends
+        - for friend in @users_friends
             li
-                a href="/users/#{i[0]}" = i[1]
+                a href="/users/#{friend.id}" = friend.name

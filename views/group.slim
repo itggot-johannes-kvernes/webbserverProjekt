@@ -1,6 +1,9 @@
+h2 = @group.name
+br
 .new_post
-    form action="/new_post" method="post"
-        input type="text" name="text" placeholder="New post"
+    form action="/new_group_post" method="post"
+        input type="text" name="text" placeholder="New post" autocomplete="off"
+        input type="hidden" name="group_id" value="#{@group.id}"
         button type="submit" Post
 
 - for post in @posts

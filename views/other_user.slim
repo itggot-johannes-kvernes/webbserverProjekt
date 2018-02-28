@@ -1,14 +1,14 @@
 .align_left
-    h2 = @username
+    h2 = @user.name
 
 .side_bar
     h3 Groups
     ul.list_style_type_none
-        - for i in @groups
+        - for group in @groups
             li
-                a href="/groups/#{i[0]}" = i[1]
+                a href="/groups/#{group.id}" = group.name
     h3 Friends
     ul.list_style_type_none
-        - for i in @friends
+        - for friend in @friends
             li
-                a href="/users/#{i[0]}" = i[1]
+                a href="/users/#{friend.id}" = friend.name
