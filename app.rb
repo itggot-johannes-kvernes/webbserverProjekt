@@ -4,8 +4,8 @@ class App < Sinatra::Base
 
     get '/' do
         if session[:user_id]
-            @posts = Post.start_page_posts(session[:user_id])
-            @users = User.username_from_posts(@posts)
+            @user = User.new(session[:user_id])
+            @posts = @user.start_page_posts
             slim :'start_page'
         else
             slim :'create_user'
@@ -43,15 +43,16 @@ class App < Sinatra::Base
         if !session[:user_id]
             redirect '/'
         elsif session[:user_id] == params["id"].to_i
-            @users_friends = User.friends(session[:user_id])
-            @users_groups = User.groups(session[:user_id])
-            @usernames = User.all_usernames_except_own_and_friends(session[:user_id])
-            @group_names = Group.all_groups_except_joined(session[:user_id])
+            @user = User.new(session[:user_id])
+            @users_friends = @user.friends
+            @users_groups = @user.groups
+            @unfriended_users = @user.all_usernames_except_own_and_friends
+            @unjoined_groups = @user.unjoined_groups
             slim :'profile'
         else
-            @friends = User.friends(params["id"].to_i)
-            @groups = User.groups(params["id"].to_i)
-            @username = User.username_from_id(params["id"].to_i)
+            @user = User.new(params["id"].to_i)
+            @friends = @user.friends
+            @groups = @user.groups
             slim :'other_user'
         end
     end
@@ -59,9 +60,10 @@ class App < Sinatra::Base
     post '/add_friend' do
 
         if params["name"] == "" || params["name"] == nil
-            
+            # ???
         else
-            User.add_friend(session[:user_id], params["name"])
+            @user = User.new(session[:user_id])
+            @user.add_friend(params["name"])
         end
 
         redirect "/users/#{session[:user_id]}"
@@ -69,7 +71,8 @@ class App < Sinatra::Base
 
     post '/delete_account' do
         if params["confirmation"] == "YES"
-            User.delete(session[:user_id])
+            @user = User.new(session[:user_id])
+            @user.delete
             session.destroy
             redirect '/'
         else
@@ -79,10 +82,28 @@ class App < Sinatra::Base
     end
 
     post '/create_group' do
-        Group.create(params["group_name"], self)
+        if params["group_name"] == "" || params["group_name"] == nil
+            redirect "/users/#{session[:user_id]}"
+        else
+            Group.create(params["group_name"], self)
+        end
     end
 
     post '/join_group' do
         Group.join(session[:user_id], params["name"], self)
+    end
+
+    get '/groups/:id' do
+        if !session[:user_id]
+            redirect '/'
+        else
+            @group = Group.new(params["id"].to_i)
+            @posts = Post.group_posts(params["id"].to_i)
+            slim :'group'
+        end
+    end
+
+    post '/new_group_post' do
+        Post.new_group_post(session[:user_id], params["text"], params["group_id"].to_i, self)
     end
 end
