@@ -2,10 +2,8 @@ class Post
 
     attr_reader :id, :user, :text, :group, :date
 
-    def self.start_page_posts(user_id)
     def initialize(*args)
         db = SQLite3::Database.open('db/db.sqlite')
-        posts = db.execute('SELECT * FROM posts WHERE user_id IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) OR user_id IN (SELECT user2_id FROM friendships WHERE user1_id IS ?)', [user_id, user_id]).reverse
 
         @id = args[0]
         if args.length == 5
@@ -37,6 +35,23 @@ class Post
         date = Time.now.strftime("%Y-%m-%d %H:%M")
         db.execute('INSERT INTO posts (upload_date, text, user_id) VALUES (?, ?, ?)', [date, text, user_id])
         app.redirect '/'
+    end
+
+    def self.group_posts(group_id)
+        db = SQLite3::Database.open('db/db.sqlite')
+        db_arr = db.execute('SELECT * FROM posts WHERE group_id IS ?', group_id).reverse
+        posts = []
+        for i in db_arr
+            posts << Post.new(i[0], i[1], i[2], i[3], i[4])
+        end
+        return posts
+    end
+
+    def self.new_group_post(user_id, text, group_id, app)
+        db = SQLite3::Database.open('db/db.sqlite')
+        date = Time.now.strftime("%Y-%m-%d %H:%M")
+        db.execute('INSERT INTO posts (upload_date, text, user_id, group_id) VALUES (?, ?, ?, ?)', [date, text, user_id, group_id])
+        app.redirect "/groups/#{group_id}"
     end
 
 end

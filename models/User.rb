@@ -14,7 +14,6 @@ class User
     end
 
     def self.login(username, password, app)
-
         db = SQLite3::Database.open('db/db.sqlite')
         hash = db.execute('SELECT password FROM users WHERE username IS ?', username)
         if hash != []
@@ -58,49 +57,69 @@ class User
         end
     end
 
-    def self.username_from_posts(posts)
+    def start_page_posts
         db = SQLite3::Database.open('db/db.sqlite')
-        users = []
-
-        for i in posts
-            users << db.execute('SELECT username FROM users WHERE id IS ?', i[3])[0][0]
+        posts = []
+        db_array = db.execute('SELECT * FROM posts WHERE group_id IS NULL AND user_id IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) OR user_id IN (SELECT user2_id FROM friendships WHERE user1_id IS ?)', [@id, @id]).reverse
+        for i in db_array
+            posts << Post.new(i[0], i[1], i[2], i[3], i[4])
         end
+        return posts
+    end
 
+    def all_usernames_except_own_and_friends
+        db = SQLite3::Database.open('db/db.sqlite')
+        db_arr = db.execute('SELECT * FROM users WHERE id NOT IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) AND id NOT IN (SELECT user2_id FROM friendships WHERE user1_id IS ?) AND id IS NOT ?', [@id, @id, @id])
+        users = []
+        for i in db_arr
+            users << User.new(i[0], i[1])
+        end
         return users
     end
 
-    def self.username_from_id(user_id)
+    def unjoined_groups
         db = SQLite3::Database.open('db/db.sqlite')
-        return db.execute('SELECT username FROM users WHERE id IS ?', user_id)[0][0]
+        db_arr = db.execute('SELECT * FROM groups WHERE id NOT IN (SELECT group_id FROM memberships WHERE user_id IS ?)', @id)
+        groups = []
+        for i in db_arr
+            groups << Group.new(i[0], i[1])
+        end
+        return groups
     end
 
-    def self.all_usernames_except_own_and_friends(user_id)
-        db = SQLite3::Database.open('db/db.sqlite')
-        return db.execute('SELECT username FROM users WHERE id NOT IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) AND id NOT IN (SELECT user2_id FROM friendships WHERE user1_id IS ?) AND id IS NOT ?', [user_id, user_id, user_id])
-    end
-
-    def self.add_friend(user1_id, name)
+    def add_friend(name)
+        # DO SOMETHING IF THE NAME IS WRONG
         db = SQLite3::Database.open('db/db.sqlite')
         user2_id = db.execute('SELECT id FROM users WHERE username IS ?', name)
-        db.execute('INSERT INTO friendships (user1_id, user2_id) VALUES (?, ?)', [user1_id, user2_id])
+        db.execute('INSERT INTO friendships (user1_id, user2_id) VALUES (?, ?)', [@id, user2_id])
     end
 
-    def self.delete(user_id)
+    def delete
         db = SQLite3::Database.open('db/db.sqlite')
-        db.execute('DELETE FROM memberships WHERE user_id IS ?', user_id)
-        db.execute('DELETE FROM friendships WHERE user1_id IS ? OR user2_id IS ?', [user_id, user_id])
-        db.execute('DELETE FROM posts WHERE user_id IS ?', user_id)
-        db.execute('DELETE FROM users WHERE id IS ?', user_id)
+        db.execute('DELETE FROM memberships WHERE user_id IS ?', @id)
+        db.execute('DELETE FROM friendships WHERE user1_id IS ? OR user2_id IS ?', [@id, @id])
+        db.execute('DELETE FROM posts WHERE user_id IS ?', @id)
+        db.execute('DELETE FROM users WHERE id IS ?', @id)
     end
 
-    def self.friends(user_id)
+    def friends
         db = SQLite3::Database.open('db/db.sqlite')
-        return db.execute('SELECT id, username FROM users WHERE id IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) OR id IN (SELECT user2_id FROM friendships WHERE user1_id IS ?) AND id IS NOT ?', [user_id, user_id, user_id])
+        db_arr = db.execute('SELECT * FROM users WHERE id IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) OR id IN (SELECT user2_id FROM friendships WHERE user1_id IS ?) AND id IS NOT ?', [@id, @id, @id])
+        friends = []
+        for i in db_arr
+            friends << User.new(i[0], i[1])
+        end
+        return friends
     end
 
-    def self.groups(user_id)
+    def groups
         db = SQLite3::Database.open('db/db.sqlite')
-        return db.execute('SELECT id, name FROM groups WHERE id IN (SELECT group_id FROM memberships WHERE user_id IS ?)', user_id)
+        db_arr = db.execute('SELECT * FROM groups WHERE id IN (SELECT group_id FROM memberships WHERE user_id IS ?)', @id)
+        groups = []
+        for i in db_arr
+            groups << Group.new(i[0], i[1])
+        end
+        return groups
     end
 
 end
