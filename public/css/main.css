@@ -90,6 +90,15 @@ header {
     border-bottom: 1px solid black;
 }
 
+.post_content {
+    overflow-wrap: inherit;
+}
+
+.username {
+    width: 80%;
+    overflow-wrap: inherit;
+}
+
 .date {
     position: absolute;
     margin: 0;
