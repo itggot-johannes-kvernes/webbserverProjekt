@@ -1,10 +1,16 @@
 class User
 
-    attr_reader :id, :username
+    attr_reader :id, :name
 
-    def initialize(id, username)
-        @user_id = id
-        @username = username
+    def initialize(*args)
+        db = SQLite3::Database.open('db/db.sqlite')
+        @id = args[0]
+        if args.length == 2
+            @name = args[1]
+        else
+            arr = db.execute('SELECT * FROM users WHERE id IS ?', @id)[0]
+            @name = arr[1]
+        end
     end
 
     def self.login(username, password, app)

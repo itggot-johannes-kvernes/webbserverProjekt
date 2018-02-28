@@ -1,12 +1,18 @@
 class Group
 
-    def initialize(id)
-        @id = id
-    end
+    attr_reader :id, :name
 
     def self.all_groups_except_joined(user_id)
+    def initialize(*args)
         db = SQLite3::Database.open('db/db.sqlite')
         return db.execute('SELECT name FROM groups WHERE id NOT IN (SELECT group_id FROM memberships WHERE user_id IS ?)', user_id)
+        @id = args[0]
+        if args.length == 2
+            @name = args[1]
+        else
+            arr = db.execute('SELECT * FROM groups WHERE id IS ?', @id)[0]
+            @name = arr[1]
+        end
     end
 
     def self.create(name, app)
