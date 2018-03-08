@@ -9,7 +9,11 @@ class Post
         if args.length == 5
             @date = args[1]
             @text = args[2]
-            @user = User.new(args[3])
+            if args[3].class == Integer
+                @user = User.new(args[3])
+            else
+                @user = User.new(args[3][0], args[3][1])
+            end
             group_id = args[4]
             if group_id
                 @group = Group.new(group_id)
