@@ -3,6 +3,8 @@ class App < Sinatra::Base
     enable :sessions
 
     get '/' do
+        all_posts = Post.all("users.id AS user_id", "username", "posts.id AS post_id", "upload_date", "text", "group_id") { |_| {include: [[:users], ["users.id", "posts.user_id"]]} }
+
         if session[:user_id]
             @user = User.new(session[:user_id])
             @posts = @user.start_page_posts

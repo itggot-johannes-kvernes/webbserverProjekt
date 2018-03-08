@@ -54,4 +54,38 @@ class Post
         app.redirect "/groups/#{group_id}"
     end
 
+    def self.all(*args, &block)
+        db = SQLite3::Database.open('db/db.sqlite')
+        db_str = "SELECT"
+        for i in args
+            if !(i == args[-1])
+                db_str += " " + i + ","
+            else
+                db_str += " " + i
+            end
+        end
+        
+        db_str += " FROM posts"
+
+        if block_given?
+            block = block.call
+            if block.keys.include? :include
+                db_str += " INNER JOIN "
+                db_str += block[:include][0][0].to_s
+                db_str += " ON "
+                db_str += block[:include][1][0].to_s
+                db_str += " IS "
+                db_str += block[:include][1][1].to_s
+            end
+        end
+        
+        posts = []
+        db_arr = db.execute(db_str)
+
+        for i in db_arr
+            posts << Post.new(i[2], i[3], i[4], [i[0], i[1]], i[5])
+        end
+
+        return posts
+    end
 end
