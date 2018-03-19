@@ -3,7 +3,7 @@ class App < Sinatra::Base
     enable :sessions
 
     get '/' do
-        all_posts = Post.all("users.id AS user_id", "username", "posts.id AS post_id", "upload_date", "text", "group_id") { |_| {include: [[:users], ["users.id", "posts.user_id"]]} }
+        # all_posts = Post.all("posts.id AS post_id", "upload_date", "text", "user_id", "group_id") { |_| {include: [[:users], ["users.id", "posts.user_id"]]} }
 
         if session[:user_id]
             @user = User.new(session[:user_id])
@@ -15,9 +15,7 @@ class App < Sinatra::Base
     end
 
     get '/create_user' do
-
         slim :'create_user'
-
     end
 
     post '/new_user' do
@@ -52,6 +50,7 @@ class App < Sinatra::Base
             @unjoined_groups = @user.unjoined_groups
             slim :'profile'
         else
+            @posts = Post.all("posts.id AS post_id", "upload_date", "text", "user_id", "group_id") { |_| {include: [[:users], ["users.id", "posts.user_id"]], restrictions: [["user_id", params["id"]]]} }
             @user = User.new(params["id"].to_i)
             @friends = @user.friends
             @groups = @user.groups
@@ -99,8 +98,10 @@ class App < Sinatra::Base
         if !session[:user_id]
             redirect '/'
         else
+            # @test_posts = Post.all("posts.id AS post_id", "upload_date", "text", "user_id", "group_id") {|_| {include: [[:groups], ["groups.id", "group_id"]], restrictions: [["group_id", params["id"]]]}}
+            # p @test_posts
             @group = Group.new(params["id"].to_i)
-            @posts = Post.group_posts(params["id"].to_i)
+            @posts = Post.all("posts.id AS post_id", "upload_date", "text", "user_id", "group_id") {|_| {include: [[:groups], ["groups.id", "group_id"]], restrictions: [["group_id", params["id"]]]}}
             slim :'group'
         end
     end
