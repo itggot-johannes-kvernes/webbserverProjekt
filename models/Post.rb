@@ -107,6 +107,6 @@ class Post
             posts << Post.new(i[0], i[1], i[2], i[3], i[4])
         end
 
-        return posts
+        return posts.reverse
     end
 end
