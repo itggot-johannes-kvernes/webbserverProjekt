@@ -61,12 +61,16 @@ class Post
     def self.all(*args, &block)
         db = SQLite3::Database.open('db/db.sqlite')
         db_str = "SELECT"
-        for i in args
-            if !(i == args[-1])
-                db_str += " " + i + ","
-            else
-                db_str += " " + i
+        if args.length > 0
+            for i in args
+                if !(i == args[-1])
+                    db_str += " " + i + ","
+                else
+                    db_str += " " + i
+                end
             end
+        else
+            db_str += " *"
         end
         
         db_str += " FROM posts"
@@ -81,13 +85,26 @@ class Post
                 db_str += " IS "
                 db_str += block[:include][1][1].to_s
             end
+
+            if block.keys.include? :restrictions
+                for i in block[:restrictions]
+                    if i == block[:restrictions][0]
+                        db_str += " WHERE "
+                    else
+                        db_str += " AND "
+                    end
+                    db_str += i[0]
+                    db_str += " IS "
+                    db_str += i[1]
+                end
+            end
         end
         
         posts = []
         db_arr = db.execute(db_str)
 
         for i in db_arr
-            posts << Post.new(i[2], i[3], i[4], [i[0], i[1]], i[5])
+            posts << Post.new(i[0], i[1], i[2], i[3], i[4])
         end
 
         return posts
