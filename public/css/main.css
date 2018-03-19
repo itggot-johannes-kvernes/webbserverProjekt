@@ -115,7 +115,9 @@ header {
 .side_bar {
     width: 300px;
     height: calc(100vh - 102px);
-    position: absolute;
+    /* position: absolute; */
+    position: fixed;
+    top: 85px;
     right: 16px;
     background-color: #141414;
     box-shadow: 0 0 8px 2px rgb(0, 0, 0);
