@@ -1,5 +1,5 @@
-.align_left
-    h2 = @user.name
+h2 = @user.name
+br
 
 .side_bar
     h3 Groups
@@ -12,3 +12,11 @@
         - for friend in @friends
             li
                 a href="/users/#{friend.id}" = friend.name
+
+- for post in @posts
+    .post
+        .post_header
+            h2.username = post.user.name
+            h5.date = post.date
+        .post_content
+            p = post.text
