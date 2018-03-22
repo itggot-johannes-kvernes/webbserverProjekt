@@ -3,11 +3,10 @@ class App < Sinatra::Base
     enable :sessions
 
     get '/' do
-        # all_posts = Post.all("posts.id AS post_id", "upload_date", "text", "user_id", "group_id") { |_| {include: [[:users], ["users.id", "posts.user_id"]]} }
 
         if session[:user_id]
             @user = User.new(session[:user_id])
-            @posts = @user.start_page_posts
+            @posts = @user.start_page_posts     # Kan inte använda Post.all med restrictions här för den behöver vara nestad
             slim :'start_page'
         else
             slim :'create_user'
@@ -50,7 +49,7 @@ class App < Sinatra::Base
             @unjoined_groups = @user.unjoined_groups
             slim :'profile'
         else
-            @posts = Post.all("posts.id AS post_id", "upload_date", "text", "user_id", "group_id") { |_| {include: [[:users], ["users.id", "posts.user_id"]], restrictions: [["user_id", params["id"]]]} }
+            @posts = Post.all("posts.id AS post_id", "upload_date", "text", "user_id", "group_id") { |_| {include: [[:users], ["users.id", "posts.user_id"]], restrictions: [["user_id", params["id"]], ["group_id", "NULL"]]} }
             @user = User.new(params["id"].to_i)
             @friends = @user.friends
             @groups = @user.groups
