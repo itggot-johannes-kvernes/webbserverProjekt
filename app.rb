@@ -4,6 +4,10 @@ class App < Sinatra::Base
 
     get '/' do
 
+        puts Post.one_with_id(1).text
+        puts User.one_with_id(1).name
+        puts Group.one_with_id(1).name
+
         if session[:user_id]
             @user = User.new(session[:user_id])
             @posts = @user.start_page_posts     # Kan inte använda Post.all med restrictions här för den behöver vara nestad

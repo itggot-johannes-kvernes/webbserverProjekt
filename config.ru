@@ -9,6 +9,7 @@ Bundler.require
 require_relative 'app.rb'
 
 # Load models
+require_relative 'models/Model.rb'
 require_relative 'models/User.rb'
 require_relative 'models/Post.rb'
 require_relative'models/Group.rb'

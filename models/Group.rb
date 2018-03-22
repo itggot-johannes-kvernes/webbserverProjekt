@@ -1,6 +1,8 @@
-class Group
+class Group < Model
 
     attr_reader :id, :name
+    table_name 'groups'
+    columns ["id", "name"]
 
     def initialize(*args)
         db = SQLite3::Database.open('db/db.sqlite')

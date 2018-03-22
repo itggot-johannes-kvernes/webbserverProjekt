@@ -1,6 +1,8 @@
-class User
+class User < Model
 
     attr_reader :id, :name
+    table_name 'users'
+    columns ["id", "username"]
 
     def initialize(*args)
         db = SQLite3::Database.open('db/db.sqlite')
