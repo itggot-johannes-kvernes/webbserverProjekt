@@ -35,7 +35,11 @@ class App < Sinatra::Base
     end
 
     post '/new_post' do
-        Post.new_post(session[:user_id], params["text"], self)
+        if params["text"] == "" || params["text"] == nil
+            redirect '/'
+        else
+            Post.new_post(session[:user_id], params["text"], self)
+        end
     end
 
     get '/users/:id' do
@@ -60,7 +64,7 @@ class App < Sinatra::Base
     post '/add_friend' do
 
         if params["name"] == "" || params["name"] == nil
-            # ???
+            redirect "/users/#{session[:user_id]}"
         else
             @user = User.new(session[:user_id])
             @user.add_friend(params["name"])
@@ -90,7 +94,11 @@ class App < Sinatra::Base
     end
 
     post '/join_group' do
-        Group.join(session[:user_id], params["name"], self)
+        if params["name"] == "" || params["name"] == nil
+            redirect "/users/#{session[:user_id]}"
+        else
+            Group.join(session[:user_id], params["name"], self)
+        end
     end
 
     get '/groups/:id' do
