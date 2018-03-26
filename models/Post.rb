@@ -1,39 +1,42 @@
 class Post < Model
 
     attr_reader :id, :user, :text, :group, :date
-    table_name 'posts'
-    columns ["id", "upload_date", "text", "user_id", "group_id"]
+    
 
     def initialize(*args)
-        db = SQLite3::Database.open('db/db.sqlite')
+    #     db = SQLite3::Database.open('db/db.sqlite')
 
-        @id = args[0]
-        if args.length == 5
-            @date = args[1]
-            @text = args[2]
-            if args[3].class == Integer
-                @user = User.new(args[3])
-            else
-                @user = User.new(args[3][0], args[3][1])
-            end
-            group_id = args[4]
-            if group_id
-                @group = Group.new(group_id)
-            else
-                @group = nil
-            end
-        else
-            arr = db.execute('SELECT * FROM posts WHERE id IS ?', @id)[0]
-            @date = arr[1]
-            @text = arr[2]
-            @user = User.new(arr[3])
-            group_id = arr[4]
-            if group_id
-                @group = Group.new(group_id)
-            else
-                @group = nil
-            end
-        end
+    #     @id = args[0]
+    #     if args.length == 5
+    #         @date = args[1]
+    #         @text = args[2]
+    #         if args[3].class == Integer
+    #             @user = User.new(args[3])
+    #         else
+    #             @user = User.new(args[3][0], args[3][1])
+    #         end
+    #         group_id = args[4]
+    #         if group_id
+    #             @group = Group.new(group_id)
+    #         else
+    #             @group = nil
+    #         end
+    #     else
+    #         arr = db.execute('SELECT * FROM posts WHERE id IS ?', @id)[0]
+    #         @date = arr[1]
+    #         @text = arr[2]
+    #         @user = User.new(arr[3])
+    #         group_id = arr[4]
+    #         if group_id
+    #             @group = Group.new(group_id)
+    #         else
+    #             @group = nil
+    #         end
+    #     end
+
+        self.class.table_name 'posts'
+        self.class.columns ["id", "upload_date", "text", "user_id", "group_id"]
+        super(args)
     end
 
     def self.new_post(user_id, text, app)

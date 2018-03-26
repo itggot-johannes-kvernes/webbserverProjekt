@@ -1,18 +1,21 @@
 class Group < Model
 
     attr_reader :id, :name
-    table_name 'groups'
-    columns ["id", "name"]
+    
 
     def initialize(*args)
-        db = SQLite3::Database.open('db/db.sqlite')
-        @id = args[0]
-        if args.length == 2
-            @name = args[1]
-        else
-            arr = db.execute('SELECT * FROM groups WHERE id IS ?', @id)[0]
-            @name = arr[1]
-        end
+    #     db = SQLite3::Database.open('db/db.sqlite')
+    #     @id = args[0]
+    #     if args.length == 2
+    #         @name = args[1]
+    #     else
+    #         arr = db.execute('SELECT * FROM groups WHERE id IS ?', @id)[0]
+    #         @name = arr[1]
+    #     end
+        
+        self.class.table_name 'groups'
+        self.class.columns ["id", "name"]
+        super(args)
     end
 
     def self.create(name, app)

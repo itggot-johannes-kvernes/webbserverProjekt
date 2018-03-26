@@ -4,9 +4,11 @@ class App < Sinatra::Base
 
     get '/' do
 
-        puts Post.one_with_id(1).text
-        puts User.one_with_id(1).name
-        puts Group.one_with_id(1).name
+        puts Post.new(1).text
+
+        # puts Post.one_with_id(1).text
+        # puts User.one_with_id(1).name
+        # puts Group.one_with_id(1).name
 
         if session[:user_id]
             @user = User.new(session[:user_id])

@@ -1,18 +1,21 @@
 class User < Model
 
     attr_reader :id, :name
-    table_name 'users'
-    columns ["id", "username"]
+    
 
     def initialize(*args)
-        db = SQLite3::Database.open('db/db.sqlite')
-        @id = args[0]
-        if args.length == 2
-            @name = args[1]
-        else
-            arr = db.execute('SELECT * FROM users WHERE id IS ?', @id)[0]
-            @name = arr[1]
-        end
+        # db = SQLite3::Database.open('db/db.sqlite')
+        # @id = args[0]
+        # if args.length == 2
+        #     @name = args[1]
+        # else
+        #     arr = db.execute('SELECT * FROM users WHERE id IS ?', @id)[0]
+        #     @name = arr[1]
+        # end
+
+        self.class.table_name 'users'
+        self.class.columns ["id", "username"]
+        super(args)
     end
 
     def self.login(username, password, app)
