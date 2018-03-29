@@ -65,7 +65,7 @@ class User < Model
     def start_page_posts
         db = SQLite3::Database.open('db/db.sqlite')
         posts = []
-        db_array = db.execute('SELECT * FROM posts WHERE group_id IS NULL AND user_id IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) OR user_id IN (SELECT user2_id FROM friendships WHERE user1_id IS ?)', [@id, @id]).reverse
+        db_array = db.execute('SELECT * FROM posts WHERE group_id IS NULL AND user_id IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) OR user_id IN (SELECT user2_id FROM friendships WHERE user1_id IS ?) OR user_id IS ?', [@id, @id, @id]).reverse
         for i in db_array
             posts << Post.new(i[0], i[1], i[2], i[3], i[4])
         end
