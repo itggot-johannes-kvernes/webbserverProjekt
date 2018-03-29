@@ -1,6 +1,6 @@
 class Post < Model
 
-    attr_reader :id, :user, :text, :group, :date
+    attr_reader :id, :user, :text, :group, :upload_date
     
 
     def initialize(*args)

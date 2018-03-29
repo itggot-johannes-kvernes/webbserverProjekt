@@ -1,11 +1,11 @@
 .align_left
-    h2 = @user.name
+    h2 = @user.username
     h3 Add friends
     form action="/add_friend" method="post"
         input type="text" name="name" placeholder="Username" list="names" autocomplete="off"
         datalist id="names"
             - for user in @unfriended_users
-                option = user.name
+                option = user.username
         br
         button type="submit" Add
     br
@@ -43,4 +43,4 @@
     ul.list_style_type_none
         - for friend in @users_friends
             li
-                a href="/users/#{friend.id}" = friend.name
+                a href="/users/#{friend.id}" = friend.username

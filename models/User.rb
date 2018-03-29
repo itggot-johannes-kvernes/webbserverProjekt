@@ -1,6 +1,6 @@
 class User < Model
 
-    attr_reader :id, :name
+    attr_reader :id, :username
     
 
     def initialize(*args)

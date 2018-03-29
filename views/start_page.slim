@@ -6,7 +6,7 @@
 - for post in @posts
     .post
         .post_header
-            h2.username = post.user.name
-            h5.date = post.date
+            h2.username = post.user.username
+            h5.date = post.upload_date
         .post_content
             p = post.text
