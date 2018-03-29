@@ -3,39 +3,33 @@ class Model
     def initialize(args)
         db = SQLite3::Database.open('db/db.sqlite')
 
-        p args
-        p @columns
-
         if args.length == @columns.length
-            @columns.length.times do |i|
-                if @columns[i] = "group_id" && self.class != Group.class
-                    if args[i]
-                        @group = Group.new(args[i])
-                    else
-                        @group = nil
-                    end
-                end
-            end
+            arr = args
         else
             arr = db.execute("SELECT * FROM #{@table_name} WHERE id IS ?", args[0])[0]
-            @columns.length.times do |i|
-                if @columns[i] = "group_id" && self.class != Group.class
-                    if arr[i]
-                        @group = Group.new(arr[i])
-                    else
-                        @group = nil
-                    end
+        end
+
+        @columns.length.times do |i|
+            if @columns[i] == "group_id"
+                if arr[i]
+                    @group = Group.new(arr[i])
+                else
+                    @group = nil
                 end
+            elsif @columns[i] == "user_id"
+                @user = User.new(arr[i])
+            else
+                instance_variable_set("@" + @columns[i], arr[i])
             end
         end
     end
 
-    def self.table_name(name)
+    def table_name(name)
         @table_name = name
     end
 
-    def self.columns(names)
-        @columns = names
+    def columns(columns)
+        @columns = columns
     end
 
 

@@ -34,8 +34,9 @@ class Post < Model
     #         end
     #     end
 
-        self.class.table_name 'posts'
-        self.class.columns ["id", "upload_date", "text", "user_id", "group_id"]
+        table_name 'posts'
+        columns ["id", "upload_date", "text", "user_id", "group_id"]
+
         super(args)
     end
 

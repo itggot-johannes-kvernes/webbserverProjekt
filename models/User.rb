@@ -13,8 +13,8 @@ class User < Model
         #     @name = arr[1]
         # end
 
-        self.class.table_name 'users'
-        self.class.columns ["id", "username"]
+        table_name 'users'
+        columns ["id", "username"]
         super(args)
     end
 

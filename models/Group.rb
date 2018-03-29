@@ -13,8 +13,8 @@ class Group < Model
     #         @name = arr[1]
     #     end
         
-        self.class.table_name 'groups'
-        self.class.columns ["id", "name"]
+        table_name 'groups'
+        columns ["id", "name"]
         super(args)
     end
 
