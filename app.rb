@@ -1,7 +1,5 @@
 class App < Sinatra::Base
 
-    enable :sessions
-
     get '/' do
 
         if session[:user_id]

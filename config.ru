@@ -21,7 +21,7 @@ use Rack::MethodOverride
 Slim::Engine.set_options pretty: true, sort_attrs: false
 
 # Enable sessions
-# enable :sessions
+App.enable :sessions
 
 # Run the app
 run App
