@@ -1,18 +1,21 @@
 class App < Sinatra::Base
 
-    get '/' do
-
-        if session[:user_id]
-            @user = User.new( {id: session[:user_id]} )
-            @posts = @user.start_page_posts     # Kan inte använda Post.all med restrictions här för den behöver vara nestad
-            slim :'start_page'
-        else
-            slim :'create_user'
-        end
-    end
-
     get '/create_user' do
         slim :'create_user'
+    end
+
+    get '/*' do             # This is kind of the before-filter, though I had to put the '/create_user' before it
+        if session[:user_id]
+            @user = User.new( {id: session[:user_id], username: session[:username]} )
+            pass
+        else
+            redirect '/create_user'
+        end
+    end
+    
+    get '/' do
+        @posts = @user.start_page_posts     # Kan inte använda Post.all med restrictions här för den behöver vara nestad
+        slim :'start_page'
     end
 
     post '/new_user' do
@@ -41,9 +44,7 @@ class App < Sinatra::Base
     end
 
     get '/users/:id' do
-        if !session[:user_id]
-            redirect '/'
-        elsif session[:user_id] == params["id"].to_i
+        if session[:user_id] == params["id"].to_i
             @user = User.new( {id: session[:user_id]} )
             @users_friends = @user.friends
             @users_groups = @user.groups
@@ -60,14 +61,12 @@ class App < Sinatra::Base
     end
 
     post '/add_friend' do
-
         if params["name"] == "" || params["name"] == nil
             redirect "/users/#{session[:user_id]}"
         else
             @user = User.new( {id: session[:user_id]} )
             @user.add_friend(params["name"])
         end
-
         redirect "/users/#{session[:user_id]}"
     end
 
@@ -80,7 +79,6 @@ class App < Sinatra::Base
         else
             redirect "/users/#{session[:user_id]}"
         end
-        
     end
 
     post '/create_group' do
@@ -100,15 +98,11 @@ class App < Sinatra::Base
     end
 
     get '/groups/:id' do
-        if !session[:user_id]
-            redirect '/'
-        else
-            # @test_posts = Post.all("posts.id AS post_id", "upload_date", "text", "user_id", "group_id") {|_| {include: [[:groups], ["groups.id", "group_id"]], restrictions: [["group_id", params["id"]]]}}
-            # p @test_posts
-            @group = Group.new( {id: params["id"].to_i} )
-            @posts = Post.all("posts.id AS post_id", "upload_date", "text", "user_id", "group_id") {|_| {include: [[:groups], ["groups.id", "group_id"]], restrictions: [["group_id", params["id"]]]}}
-            slim :'group'
-        end
+        # @test_posts = Post.all("posts.id AS post_id", "upload_date", "text", "user_id", "group_id") {|_| {include: [[:groups], ["groups.id", "group_id"]], restrictions: [["group_id", params["id"]]]}}
+        # p @test_posts
+        @group = Group.new( {id: params["id"].to_i} )
+        @posts = Post.all("posts.id AS post_id", "upload_date", "text", "user_id", "group_id") {|_| {include: [[:groups], ["groups.id", "group_id"]], restrictions: [["group_id", params["id"]]]}}
+        slim :'group'
     end
 
     post '/new_group_post' do
