@@ -5,7 +5,7 @@ class App < Sinatra::Base
     get '/' do
 
         if session[:user_id]
-            @user = User.new(session[:user_id])
+            @user = User.new( {id: session[:user_id]} )
             @posts = @user.start_page_posts     # Kan inte använda Post.all med restrictions här för den behöver vara nestad
             slim :'start_page'
         else
@@ -46,7 +46,7 @@ class App < Sinatra::Base
         if !session[:user_id]
             redirect '/'
         elsif session[:user_id] == params["id"].to_i
-            @user = User.new(session[:user_id])
+            @user = User.new( {id: session[:user_id]} )
             @users_friends = @user.friends
             @users_groups = @user.groups
             @unfriended_users = @user.all_usernames_except_own_and_friends
@@ -54,7 +54,7 @@ class App < Sinatra::Base
             slim :'profile'
         else
             @posts = Post.all("posts.id AS post_id", "upload_date", "text", "user_id", "group_id") { |_| {include: [[:users], ["users.id", "posts.user_id"]], restrictions: [["user_id", params["id"]], ["group_id", "NULL"]]} }
-            @user = User.new(params["id"].to_i)
+            @user = User.new( {id: params["id"].to_i} )
             @friends = @user.friends
             @groups = @user.groups
             slim :'other_user'
@@ -66,7 +66,7 @@ class App < Sinatra::Base
         if params["name"] == "" || params["name"] == nil
             redirect "/users/#{session[:user_id]}"
         else
-            @user = User.new(session[:user_id])
+            @user = User.new( {id: session[:user_id]} )
             @user.add_friend(params["name"])
         end
 
@@ -75,7 +75,7 @@ class App < Sinatra::Base
 
     post '/delete_account' do
         if params["confirmation"] == "YES"
-            @user = User.new(session[:user_id])
+            @user = User.new( {id: session[:user_id]})
             @user.delete
             session.destroy
             redirect '/'
@@ -107,7 +107,7 @@ class App < Sinatra::Base
         else
             # @test_posts = Post.all("posts.id AS post_id", "upload_date", "text", "user_id", "group_id") {|_| {include: [[:groups], ["groups.id", "group_id"]], restrictions: [["group_id", params["id"]]]}}
             # p @test_posts
-            @group = Group.new(params["id"].to_i)
+            @group = Group.new( {id: params["id"].to_i} )
             @posts = Post.all("posts.id AS post_id", "upload_date", "text", "user_id", "group_id") {|_| {include: [[:groups], ["groups.id", "group_id"]], restrictions: [["group_id", params["id"]]]}}
             slim :'group'
         end

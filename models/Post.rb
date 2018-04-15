@@ -3,40 +3,9 @@ class Post < Model
     attr_reader :id, :user, :text, :group, :upload_date
     
 
-    def initialize(*args)
-    #     db = SQLite3::Database.open('db/db.sqlite')
-
-    #     @id = args[0]
-    #     if args.length == 5
-    #         @date = args[1]
-    #         @text = args[2]
-    #         if args[3].class == Integer
-    #             @user = User.new(args[3])
-    #         else
-    #             @user = User.new(args[3][0], args[3][1])
-    #         end
-    #         group_id = args[4]
-    #         if group_id
-    #             @group = Group.new(group_id)
-    #         else
-    #             @group = nil
-    #         end
-    #     else
-    #         arr = db.execute('SELECT * FROM posts WHERE id IS ?', @id)[0]
-    #         @date = arr[1]
-    #         @text = arr[2]
-    #         @user = User.new(arr[3])
-    #         group_id = arr[4]
-    #         if group_id
-    #             @group = Group.new(group_id)
-    #         else
-    #             @group = nil
-    #         end
-    #     end
-
+    def initialize(args)
         table_name 'posts'
         columns ["id", "upload_date", "text", "user_id", "group_id"]
-
         super(args)
     end
 
@@ -52,7 +21,7 @@ class Post < Model
         db_arr = db.execute('SELECT * FROM posts WHERE group_id IS ?', group_id).reverse
         posts = []
         for i in db_arr
-            posts << Post.new(i[0], i[1], i[2], i[3], i[4])
+            posts << Post.new( {id: i[0], upload_date: i[1], text: i[2], user_id: i[3], group_id: i[4]} )
         end
         return posts
     end
@@ -110,7 +79,7 @@ class Post < Model
         db_arr = db.execute(db_str)
 
         for i in db_arr
-            posts << Post.new(i[0], i[1], i[2], i[3], i[4])
+            posts << Post.new( {id: i[0], upload_date: i[1], text: i[2], user_id: i[3], group_id: i[4]} )
         end
 
         return posts.reverse

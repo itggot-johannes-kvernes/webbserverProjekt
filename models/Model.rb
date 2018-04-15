@@ -1,27 +1,38 @@
 class Model
 
     def initialize(args)
+        
         db = SQLite3::Database.open('db/db.sqlite')
+        db.results_as_hash = true
 
-        if args.length == @columns.length
-            arr = args
+        if args.keys.length == @columns.length
+            to_be_inserted = args
         else
-            arr = db.execute("SELECT * FROM #{@table_name} WHERE id IS ?", args[0])[0]
+            temp = db.execute("SELECT * FROM #{@table_name} WHERE id IS ?", args[:id])[0]
+            temp.reject { |k, v| k.class == Integer }
+            to_be_inserted = {}
+            for key in temp.keys
+                if key.class == String
+                    to_be_inserted[key.to_sym] = temp[key]
+                end
+            end
         end
 
-        @columns.length.times do |i|
-            if @columns[i] == "group_id"
-                if arr[i]
-                    @group = Group.new(arr[i])
+        to_be_inserted.each do |k, v|
+            if k == :group_id
+                if v
+                    @group = Group.new( {id: v} )
                 else
                     @group = nil
                 end
-            elsif @columns[i] == "user_id"
-                @user = User.new(arr[i])
+            elsif k == :user_id
+                @user = User.new( {id: v} )
             else
-                instance_variable_set("@" + @columns[i], arr[i])
+                instance_variable_set("@" + k.to_s, v)
             end
         end
+
+        db.results_as_hash = false
     end
 
     def table_name(name)
@@ -33,18 +44,19 @@ class Model
     end
 
 
+    # Redundant since the .new method covers this
+    #
+    # def self.one_with_id(id)
+    #     db = SQLite3::Database.open('db/db.sqlite')
+    #     db_result = db.execute("SELECT * FROM #{@table_name} WHERE id IS ?", id)[0]
 
-    def self.one_with_id(id)
-        db = SQLite3::Database.open('db/db.sqlite')
-        db_result = db.execute("SELECT * FROM #{@table_name} WHERE id IS ?", id)[0]
-
-        if db_result.length == 2 || db_result.length == 3
-            return self.new(db_result[0], db_result[1])
-        elsif db_result.length == 5
-            return self.new(db_result[0], db_result[1], db_result[2], db_result[3], db_result[4])
-        else
-            puts "We got a problem"
-            return nil
-        end
-    end
+    #     if db_result.length == 2 || db_result.length == 3
+    #         return self.new(db_result[0], db_result[1])
+    #     elsif db_result.length == 5
+    #         return self.new(db_result[0], db_result[1], db_result[2], db_result[3], db_result[4])
+    #     else
+    #         puts "We got a problem"
+    #         return nil
+    #     end
+    # end
 end

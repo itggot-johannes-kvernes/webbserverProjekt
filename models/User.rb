@@ -3,16 +3,7 @@ class User < Model
     attr_reader :id, :username
     
 
-    def initialize(*args)
-        # db = SQLite3::Database.open('db/db.sqlite')
-        # @id = args[0]
-        # if args.length == 2
-        #     @name = args[1]
-        # else
-        #     arr = db.execute('SELECT * FROM users WHERE id IS ?', @id)[0]
-        #     @name = arr[1]
-        # end
-
+    def initialize(args)
         table_name 'users'
         columns ["id", "username"]
         super(args)
@@ -67,7 +58,7 @@ class User < Model
         posts = []
         db_array = db.execute('SELECT * FROM posts WHERE group_id IS NULL AND user_id IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) OR user_id IN (SELECT user2_id FROM friendships WHERE user1_id IS ?) OR user_id IS ?', [@id, @id, @id]).reverse
         for i in db_array
-            posts << Post.new(i[0], i[1], i[2], i[3], i[4])
+            posts << Post.new( {id: i[0], upload_date: i[1], text: i[2], user_id: i[3], group_id: i[4]} )
         end
         return posts
     end
@@ -77,7 +68,7 @@ class User < Model
         db_arr = db.execute('SELECT * FROM users WHERE id NOT IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) AND id NOT IN (SELECT user2_id FROM friendships WHERE user1_id IS ?) AND id IS NOT ?', [@id, @id, @id])
         users = []
         for i in db_arr
-            users << User.new(i[0], i[1])
+            users << User.new( {id: i[0], username: i[1]} )
         end
         return users
     end
@@ -87,7 +78,7 @@ class User < Model
         db_arr = db.execute('SELECT * FROM groups WHERE id NOT IN (SELECT group_id FROM memberships WHERE user_id IS ?)', @id)
         groups = []
         for i in db_arr
-            groups << Group.new(i[0], i[1])
+            groups << Group.new( {id: i[0], name: i[1]} )
         end
         return groups
     end
@@ -112,7 +103,7 @@ class User < Model
         db_arr = db.execute('SELECT * FROM users WHERE id IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) OR id IN (SELECT user2_id FROM friendships WHERE user1_id IS ?) AND id IS NOT ?', [@id, @id, @id])
         friends = []
         for i in db_arr
-            friends << User.new(i[0], i[1])
+            friends << User.new( {id: i[0], username: i[1]} )
         end
         return friends
     end
@@ -122,7 +113,7 @@ class User < Model
         db_arr = db.execute('SELECT * FROM groups WHERE id IN (SELECT group_id FROM memberships WHERE user_id IS ?)', @id)
         groups = []
         for i in db_arr
-            groups << Group.new(i[0], i[1])
+            groups << Group.new( {id: i[0], name: i[1]})
         end
         return groups
     end
