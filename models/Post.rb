@@ -1,7 +1,7 @@
 class Post < Model
 
     attr_reader :id, :user, :text, :group, :upload_date
-    
+
 
     def initialize(args)
         table_name 'posts'

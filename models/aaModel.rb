@@ -5,7 +5,7 @@ class Model
         db = SQLite3::Database.open('db/db.sqlite')
         db.results_as_hash = true
 
-        if args.keys.length == @columns.length
+        if args.length == @columns.length
             to_be_inserted = args
         else
             temp = db.execute("SELECT * FROM #{@table_name} WHERE id IS ?", args[:id])[0]
@@ -31,7 +31,6 @@ class Model
                 instance_variable_set("@" + k.to_s, v)
             end
         end
-
         db.results_as_hash = false
     end
 

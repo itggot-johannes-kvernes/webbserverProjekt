@@ -11,9 +11,9 @@ class User < Model
 
     def self.login(username, password, app)
         db = SQLite3::Database.open('db/db.sqlite')
-        hash = db.execute('SELECT password FROM users WHERE username IS ?', username)
-        if hash != []
-            hash = hash[0][0]
+        hash = db.execute('SELECT password FROM users WHERE username IS ?', username)[0]
+        if hash
+            hash = hash[0]
             stored_password = BCrypt::Password.new(hash)
             if stored_password == password
                 user_id = db.execute('SELECT id FROM users WHERE username IS ?', username)[0][0]
@@ -26,13 +26,10 @@ class User < Model
         else
             app.redirect '/create_user'
         end
-
     end
 
     def self.new_user(username, password, key, app)
-
         db = SQLite3::Database.open('db/db.sqlite')
-
         username_array = db.execute('SELECT username FROM users')
         username_is_unused = true
 

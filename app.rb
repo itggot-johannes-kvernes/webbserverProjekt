@@ -4,7 +4,7 @@ class App < Sinatra::Base
         slim :'create_user'
     end
 
-    get '/*' do             # This is kind of the before-filter, though I had to put the '/create_user' before it
+    get '/*' do     # Det här är typ before-filtret, men jag behövde lägga 'create_user' innan
         if session[:user_id]
             @user = User.new( {id: session[:user_id], username: session[:username]} )
             pass
