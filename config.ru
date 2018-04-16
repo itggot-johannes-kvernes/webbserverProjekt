@@ -9,10 +9,9 @@ Bundler.require
 require_relative 'app.rb'
 
 # Load models
-require_relative 'models/Model.rb'
-require_relative 'models/User.rb'
-require_relative 'models/Post.rb'
-require_relative 'models/Group.rb'
+Dir.glob('models/*.rb') do |m|
+    require_relative m
+end
 
 # Make sure PUT, PATCH, and DELETE work
 use Rack::MethodOverride
