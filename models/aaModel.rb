@@ -34,10 +34,16 @@ class Model
         db.results_as_hash = false
     end
 
+    # Sets the table_name instance variable for later use
+    #
+    # @param name [String] the table name
     def table_name(name)
         @table_name = name
     end
 
+    # Sets the columns instance variable for later use
+    #
+    # @param columns [Array] array of column names
     def columns(columns)
         @columns = columns
     end
