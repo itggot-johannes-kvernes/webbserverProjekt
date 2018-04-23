@@ -9,30 +9,6 @@ class Post < Model
         super(args)
     end
 
-    def self.new_post(user_id, text, app)
-        db = SQLite3::Database.open('db/db.sqlite')
-        date = Time.now.strftime("%Y-%m-%d %H:%M")
-        db.execute("INSERT INTO posts (upload_date, text, user_id) VALUES (?, ?, ?)", [date, text, user_id])
-        app.redirect '/'
-    end
-
-    def self.group_posts(group_id)
-        db = SQLite3::Database.open('db/db.sqlite')
-        db_arr = db.execute('SELECT * FROM posts WHERE group_id IS ?', group_id).reverse
-        posts = []
-        for i in db_arr
-            posts << Post.new( {id: i[0], upload_date: i[1], text: i[2], user_id: i[3], group_id: i[4]} )
-        end
-        return posts
-    end
-
-    def self.new_group_post(user_id, text, group_id, app)
-        db = SQLite3::Database.open('db/db.sqlite')
-        date = Time.now.strftime("%Y-%m-%d %H:%M")
-        db.execute('INSERT INTO posts (upload_date, text, user_id, group_id) VALUES (?, ?, ?, ?)', [date, text, user_id, group_id])
-        app.redirect "/groups/#{group_id}"
-    end
-
     def self.all(*args, &block)
         db = SQLite3::Database.open('db/db.sqlite')
         db_str = "SELECT"

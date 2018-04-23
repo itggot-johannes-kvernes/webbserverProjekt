@@ -110,8 +110,6 @@ class App < Sinatra::Base
     end
 
     get '/groups/:id' do
-        # @test_posts = Post.all("posts.id AS post_id", "upload_date", "text", "user_id", "group_id") {|_| {include: [[:groups], ["groups.id", "group_id"]], restrictions: [["group_id", params["id"]]]}}
-        # p @test_posts
         @group = Group.new( {id: params["id"].to_i} )
         @posts = Post.all("posts.id AS post_id", "upload_date", "text", "user_id", "group_id") {|_| {include: [[:groups], ["groups.id", "group_id"]], restrictions: [["group_id", params["id"]]]}}
         slim :'group'

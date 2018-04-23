@@ -51,12 +51,7 @@ class Model
         @columns = columns
     end
 
-
-    # Redundant since the .new method covers this
     #
-    # def self.one_with_id(id)
-    #     db = SQLite3::Database.open('db/db.sqlite')
-    #     db_result = db.execute("SELECT * FROM #{@table_name} WHERE id IS ?", id)[0]
     def add_to_db
         db = SQLite3::Database.open('db/db.sqlite')
         str = "INSERT INTO #{@table_name} ("
@@ -72,15 +67,6 @@ class Model
         end
         str += "?)"
 
-    #     if db_result.length == 2 || db_result.length == 3
-    #         return self.new(db_result[0], db_result[1])
-    #     elsif db_result.length == 5
-    #         return self.new(db_result[0], db_result[1], db_result[2], db_result[3], db_result[4])
-    #     else
-    #         puts "We got a problem"
-    #         return nil
-    #     end
-    # end
         to_be_inserted = @values.values
         to_be_inserted.delete_at(0)
 
