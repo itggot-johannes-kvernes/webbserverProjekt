@@ -31,7 +31,12 @@ class App < Sinatra::Base
     end
 
     post '/login' do
-        User.login(params["username"], params["password"], self)
+        login = User.login(params["username"], params["password"])
+        if login
+            session[:user_id] = login
+            session[:username] = params["username"]
+        end
+        redirect '/'
     end
 
     post '/logout' do
@@ -100,6 +105,7 @@ class App < Sinatra::Base
             redirect "/users/#{session[:user_id]}"
         else
             Group.join(session[:user_id], params["name"], self)
+            redirect "/users/#{session[:user_id]}"
         end
     end
 

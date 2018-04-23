@@ -9,22 +9,16 @@ class User < Model
         super(args)
     end
 
-    def self.login(username, password, app)
+    def self.login(username, password)
         db = SQLite3::Database.open('db/db.sqlite')
         hash = db.execute('SELECT password FROM users WHERE username IS ?', username)[0]
         if hash
-            hash = hash[0]
-            stored_password = BCrypt::Password.new(hash)
+            hash = hash
+            stored_password = BCrypt::Password.new(hash[0])
             if stored_password == password
                 user_id = db.execute('SELECT id FROM users WHERE username IS ?', username)[0][0]
-                app.session[:user_id] = user_id
-                app.session[:username] = username
-                app.redirect '/'
-            else
-                app.redirect '/create_user'
+                return user_id
             end
-        else
-            app.redirect '/create_user'
         end
     end
 
@@ -44,9 +38,10 @@ class User < Model
         if username_is_unused && key == "4242"
             hash = BCrypt::Password.create(password)
             db.execute('INSERT INTO users (username, password) VALUES (?, ?)', [username, hash])
-            User.login(username, password, app)
+            User.login(username, password)
+            return true
         else
-            app.redirect '/unable_to_create_user'
+            return false
         end
     end
 
