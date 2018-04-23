@@ -9,6 +9,11 @@ class Post < Model
         super(args)
     end
 
+    # Gets all posts with restrictions from the database
+    #
+    # @param args [Array<String>] strings with the database columns
+    # @param block [Block] the restrictions etc
+    # @return [Array<Post>] the array of all posts matching the restrictions
     def self.all(*args, &block)
         db = SQLite3::Database.open('db/db.sqlite')
         db_str = "SELECT"

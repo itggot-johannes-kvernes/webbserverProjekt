@@ -51,6 +51,8 @@ class Model
         @columns = columns
     end
 
+    # Adds new instances to the database
+    #
     #
     def add_to_db
         db = SQLite3::Database.open('db/db.sqlite')
