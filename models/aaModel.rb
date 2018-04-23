@@ -1,6 +1,8 @@
 class Model
 
     def initialize(args)
+
+        @values = {}
         
         db = SQLite3::Database.open('db/db.sqlite')
         db.results_as_hash = true
@@ -19,6 +21,7 @@ class Model
         end
 
         to_be_inserted.each do |k, v|
+            @values[k] = v
             if k == :group_id
                 if v
                     @group = Group.new( {id: v} )
@@ -54,6 +57,20 @@ class Model
     # def self.one_with_id(id)
     #     db = SQLite3::Database.open('db/db.sqlite')
     #     db_result = db.execute("SELECT * FROM #{@table_name} WHERE id IS ?", id)[0]
+    def add_to_db
+        db = SQLite3::Database.open('db/db.sqlite')
+        str = "INSERT INTO #{@table_name} ("
+
+        (@values.length - 2).times do |i|
+            str += "#{@values.keys[i + 1].to_s}, "
+        end
+        str += "#{@values.keys[-1].to_s}"
+
+        str += ") VALUES ("
+        (@values.length - 2).times do
+            str += "?, "
+        end
+        str += "?)"
 
     #     if db_result.length == 2 || db_result.length == 3
     #         return self.new(db_result[0], db_result[1])
@@ -64,4 +81,10 @@ class Model
     #         return nil
     #     end
     # end
+        to_be_inserted = @values.values
+        to_be_inserted.delete_at(0)
+
+        db.execute(str, to_be_inserted)
+    end
+    
 end

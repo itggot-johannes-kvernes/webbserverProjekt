@@ -28,7 +28,7 @@ class User < Model
         end
     end
 
-    def self.new_user(username, password, key, app)
+    def self.add_to_db(username, password, key)
         db = SQLite3::Database.open('db/db.sqlite')
         username_array = db.execute('SELECT username FROM users')
         username_is_unused = true

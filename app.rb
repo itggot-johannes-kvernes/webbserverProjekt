@@ -19,7 +19,11 @@ class App < Sinatra::Base
     end
 
     post '/new_user' do
-        User.new_user(params["username"], params["password"], params["key"], self)
+        if User.add_to_db(params["username"], params["password"], params["key"])
+            redirect '/'
+        else
+            redirect '/unable_to_create_user'
+        end
     end
 
     get '/unable_to_create_user' do
@@ -36,11 +40,11 @@ class App < Sinatra::Base
     end
 
     post '/new_post' do
-        if params["text"] == "" || params["text"] == nil
-            redirect '/'
-        else
-            Post.new_post(session[:user_id], params["text"], self)
+        if params["text"] != "" && params["text"] != nil
+            post = Post.new( {id: nil, upload_date: Time.now.strftime("%Y-%m-%d %H:%M"), text: params["text"], user_id: session[:user_id], group_id: nil} )
+            post.add_to_db
         end
+        redirect '/'
     end
 
     get '/users/:id' do
@@ -85,7 +89,9 @@ class App < Sinatra::Base
         if params["group_name"] == "" || params["group_name"] == nil
             redirect "/users/#{session[:user_id]}"
         else
-            Group.create(params["group_name"], self)
+            group = Group.new( {id: nil, name: params["group_name"]} )
+            group.add_to_db
+            redirect "/users/#{session[:user_id]}"
         end
     end
 
@@ -106,6 +112,8 @@ class App < Sinatra::Base
     end
 
     post '/new_group_post' do
-        Post.new_group_post(session[:user_id], params["text"], params["group_id"].to_i, self)
+        post = Post.new( {id: nil, upload_date: Time.now.strftime("%Y-%m-%d %H:%M"), text: params["text"], user_id: session[:user_id], group_id: params["group_id"].to_i} )
+        post.add_to_db
+        redirect "/groups/#{params['group_id']}"
     end
 end
