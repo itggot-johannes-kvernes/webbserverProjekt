@@ -15,6 +15,9 @@ class Group < Model
     # @param group_name [String] the name of the group
     def self.join(user_id, group_name)
         db = SQLite3::Database.open('db/db.sqlite')
-        db.execute('INSERT INTO memberships (group_id, user_id) VALUES ((SELECT id FROM groups WHERE name IS ?), ?)', [group_name, user_id])
+        group_id = db.execute('SELECT id FROM groups WHERE name IS ?', [group_name])[0]
+        if group_id
+            db.execute('INSERT INTO memberships (group_id, user_id) VALUES (?, ?)', [group_id, user_id])
+        end
     end
 end

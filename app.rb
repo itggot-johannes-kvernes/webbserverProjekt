@@ -99,12 +99,10 @@ class App < Sinatra::Base
     end
 
     post '/join_group' do
-        if params["name"] == "" || params["name"] == nil
-            redirect "/users/#{session[:user_id]}"
-        else
-            Group.join(session[:user_id], params["name"], self)
-            redirect "/users/#{session[:user_id]}"
+        if params["name"] != "" && params["name"]
+            Group.join(session[:user_id], params["name"])
         end
+        redirect "/users/#{session[:user_id]}"
     end
 
     get '/groups/:id' do
