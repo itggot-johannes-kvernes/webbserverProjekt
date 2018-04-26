@@ -70,9 +70,7 @@ class App < Sinatra::Base
     end
 
     post '/add_friend' do
-        if params["name"] == "" || params["name"] == nil
-            redirect "/users/#{session[:user_id]}"
-        else
+        if params["name"] != "" && params["name"]
             @user = User.new( {id: session[:user_id]} )
             @user.add_friend(params["name"])
         end

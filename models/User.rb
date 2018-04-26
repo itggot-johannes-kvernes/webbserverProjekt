@@ -96,10 +96,11 @@ class User < Model
     #
     # @param name [String] the name of the soon-to-be friend
     def add_friend(name)
-        # DO SOMETHING IF THE NAME IS WRONG
         db = SQLite3::Database.open('db/db.sqlite')
         user2_id = db.execute('SELECT id FROM users WHERE username IS ?', name)
-        db.execute('INSERT INTO friendships (user1_id, user2_id) VALUES (?, ?)', [@id, user2_id])
+        if user2_id != []
+            db.execute('INSERT INTO friendships (user1_id, user2_id) VALUES (?, ?)', [@id, user2_id])
+        end
     end
 
     # Deletes everything about a user
