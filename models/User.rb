@@ -18,7 +18,6 @@ class User < Model
         db = SQLite3::Database.open('db/db.sqlite')
         hash = db.execute('SELECT password FROM users WHERE username IS ?', username)[0]
         if hash
-            hash = hash
             stored_password = BCrypt::Password.new(hash[0])
             if stored_password == password
                 user_id = db.execute('SELECT id FROM users WHERE username IS ?', username)[0][0]
@@ -35,16 +34,14 @@ class User < Model
     # @return [Boolean] if the creation of the new account succseeded
     def self.add_to_db(username, password, key)
         db = SQLite3::Database.open('db/db.sqlite')
-        username_array = db.execute('SELECT username FROM users')
-        username_is_unused = true
-
-        if username_array.length != 0
-            for i in username_array
-                if username == i
-                    username_is_unused = true
-                end
-            end
+        db_array = db.execute('SELECT username FROM users')
+        
+        usernames = []
+        for i in db_array
+            usernames << i[0]
         end
+
+        username_is_unused = !(usernames.include?(username))
 
         if username_is_unused && key == "4242"
             hash = BCrypt::Password.create(password)
