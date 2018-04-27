@@ -19,11 +19,7 @@ class Post < Model
         db_str = "SELECT"
         if args.length > 0
             for i in args
-                if !(i == args[-1])
-                    db_str += " " + i + ","
-                else
-                    db_str += " " + i
-                end
+                db_str += !(i == args[-1]) ? " " + i + "," : " " + i
             end
         else
             db_str += " *"
@@ -57,9 +53,8 @@ class Post < Model
         end
         
         posts = []
-        db_arr = db.execute(db_str)
 
-        for i in db_arr
+        for i in db.execute(db_str)
             posts << Post.new( {id: i[0], upload_date: i[1], text: i[2], user_id: i[3], group_id: i[4]} )
         end
 

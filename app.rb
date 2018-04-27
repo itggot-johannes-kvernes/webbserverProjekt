@@ -19,11 +19,7 @@ class App < Sinatra::Base
     end
 
     post '/new_user' do
-        if User.add_to_db(params["username"], params["password"], params["key"])
-            redirect '/'
-        else
-            redirect '/unable_to_create_user'
-        end
+        redirect User.add_to_db(params["username"], params["password"], params["key"]) ? '/' : '/unable_to_create_user'
     end
 
     get '/unable_to_create_user' do
@@ -45,16 +41,12 @@ class App < Sinatra::Base
     end
 
     post '/new_post' do
-        if params["text"] != "" && params["text"] != nil
-            post = Post.new( {id: nil, upload_date: Time.now.strftime("%Y-%m-%d %H:%M"), text: params["text"], user_id: session[:user_id], group_id: nil} )
-            post.add_to_db
-        end
+        Post.new( {id: nil, upload_date: Time.now.strftime("%Y-%m-%d %H:%M"), text: params["text"], user_id: session[:user_id], group_id: nil} ).add_to_db if params["text"] != "" && params["text"] != nil
         redirect '/'
     end
 
     get '/users/:id' do
         if session[:user_id] == params["id"].to_i
-            @user = User.new( {id: session[:user_id]} )
             @users_friends = @user.friends
             @users_groups = @user.groups
             @unfriended_users = @user.all_usernames_except_own_and_friends
@@ -62,7 +54,6 @@ class App < Sinatra::Base
             slim :'profile'
         else
             @posts = Post.all("posts.id AS post_id", "upload_date", "text", "user_id", "group_id") { |_| {include: [[:users], ["users.id", "posts.user_id"]], restrictions: [["user_id", params["id"]], ["group_id", "NULL"]]} }
-            @user = User.new( {id: params["id"].to_i} )
             @friends = @user.friends
             @groups = @user.groups
             slim :'other_user'
@@ -70,10 +61,7 @@ class App < Sinatra::Base
     end
 
     post '/add_friend' do
-        if params["name"] != "" && params["name"]
-            @user = User.new( {id: session[:user_id]} )
-            @user.add_friend(params["name"])
-        end
+        User.new( {id: session[:user_id]} ).add_friend(params["name"]) if params["name"] != "" && params["name"]
         redirect "/users/#{session[:user_id]}"
     end
 
@@ -89,19 +77,12 @@ class App < Sinatra::Base
     end
 
     post '/create_group' do
-        if params["group_name"] == "" || params["group_name"] == nil
-            redirect "/users/#{session[:user_id]}"
-        else
-            group = Group.new( {id: nil, name: params["group_name"]} )
-            group.add_to_db
-            redirect "/users/#{session[:user_id]}"
-        end
+        Group.new( {id: nil, name: params["group_name"]} ).add_to_db if params["group_name"] != "" && params["group_name"] != nil
+        redirect "/users/#{session[:user_id]}"
     end
 
     post '/join_group' do
-        if params["name"] != "" && params["name"]
-            Group.join(session[:user_id], params["name"])
-        end
+        Group.join(session[:user_id], params["name"]) if params["name"] != "" && params["name"]
         redirect "/users/#{session[:user_id]}"
     end
 
@@ -112,8 +93,7 @@ class App < Sinatra::Base
     end
 
     post '/new_group_post' do
-        post = Post.new( {id: nil, upload_date: Time.now.strftime("%Y-%m-%d %H:%M"), text: params["text"], user_id: session[:user_id], group_id: params["group_id"].to_i} )
-        post.add_to_db
+        Post.new( {id: nil, upload_date: Time.now.strftime("%Y-%m-%d %H:%M"), text: params["text"], user_id: session[:user_id], group_id: params["group_id"].to_i} ).add_to_db if params["text"] != "" && params["text"] != nil
         redirect "/groups/#{params['group_id']}"
     end
 end

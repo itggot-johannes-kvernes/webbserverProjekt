@@ -14,9 +14,7 @@ class Model
             temp.reject { |k, v| k.class == Integer }
             to_be_inserted = {}
             for key in temp.keys
-                if key.class == String
-                    to_be_inserted[key.to_sym] = temp[key]
-                end
+                to_be_inserted[key.to_sym] = temp[key] if key.class == String
             end
         end
 

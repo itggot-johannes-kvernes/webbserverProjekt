@@ -59,8 +59,7 @@ class User < Model
     def start_page_posts
         db = SQLite3::Database.open('db/db.sqlite')
         posts = []
-        db_array = db.execute('SELECT * FROM posts WHERE group_id IS NULL AND user_id IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) OR group_id IS NULL AND user_id IN (SELECT user2_id FROM friendships WHERE user1_id IS ?) OR group_id IS NULL AND user_id IS ?', [@id, @id, @id]).reverse
-        for i in db_array
+        for i in db.execute('SELECT * FROM posts WHERE group_id IS NULL AND user_id IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) OR group_id IS NULL AND user_id IN (SELECT user2_id FROM friendships WHERE user1_id IS ?) OR group_id IS NULL AND user_id IS ?', [@id, @id, @id]).reverse
             posts << Post.new( {id: i[0], upload_date: i[1], text: i[2], user_id: i[3], group_id: i[4]} )
         end
         return posts
@@ -71,9 +70,8 @@ class User < Model
     # @return [Array<User>] the array of users
     def all_usernames_except_own_and_friends
         db = SQLite3::Database.open('db/db.sqlite')
-        db_arr = db.execute('SELECT * FROM users WHERE id NOT IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) AND id NOT IN (SELECT user2_id FROM friendships WHERE user1_id IS ?) AND id IS NOT ?', [@id, @id, @id])
         users = []
-        for i in db_arr
+        for i in db.execute('SELECT * FROM users WHERE id NOT IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) AND id NOT IN (SELECT user2_id FROM friendships WHERE user1_id IS ?) AND id IS NOT ?', [@id, @id, @id])
             users << User.new( {id: i[0], username: i[1]} )
         end
         return users
@@ -84,9 +82,8 @@ class User < Model
     # @return [Array<Group>] the array of groups
     def unjoined_groups
         db = SQLite3::Database.open('db/db.sqlite')
-        db_arr = db.execute('SELECT * FROM groups WHERE id NOT IN (SELECT group_id FROM memberships WHERE user_id IS ?)', @id)
         groups = []
-        for i in db_arr
+        for i in db.execute('SELECT * FROM groups WHERE id NOT IN (SELECT group_id FROM memberships WHERE user_id IS ?)', @id)
             groups << Group.new( {id: i[0], name: i[1]} )
         end
         return groups
@@ -98,9 +95,7 @@ class User < Model
     def add_friend(name)
         db = SQLite3::Database.open('db/db.sqlite')
         user2_id = db.execute('SELECT id FROM users WHERE username IS ?', name)
-        if user2_id != []
-            db.execute('INSERT INTO friendships (user1_id, user2_id) VALUES (?, ?)', [@id, user2_id])
-        end
+        db.execute('INSERT INTO friendships (user1_id, user2_id) VALUES (?, ?)', [@id, user2_id]) if user2_id != []
     end
 
     # Deletes everything about a user
@@ -117,9 +112,8 @@ class User < Model
     # @return [Array<User>] the array of users
     def friends
         db = SQLite3::Database.open('db/db.sqlite')
-        db_arr = db.execute('SELECT * FROM users WHERE id IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) OR id IN (SELECT user2_id FROM friendships WHERE user1_id IS ?) AND id IS NOT ?', [@id, @id, @id])
         friends = []
-        for i in db_arr
+        for i in db.execute('SELECT * FROM users WHERE id IN (SELECT user1_id FROM friendships WHERE user2_id IS ?) OR id IN (SELECT user2_id FROM friendships WHERE user1_id IS ?) AND id IS NOT ?', [@id, @id, @id])
             friends << User.new( {id: i[0], username: i[1]} )
         end
         return friends
@@ -130,9 +124,8 @@ class User < Model
     # @return [Array<Group>] the array of groups
     def groups
         db = SQLite3::Database.open('db/db.sqlite')
-        db_arr = db.execute('SELECT * FROM groups WHERE id IN (SELECT group_id FROM memberships WHERE user_id IS ?)', @id)
         groups = []
-        for i in db_arr
+        for i in db.execute('SELECT * FROM groups WHERE id IN (SELECT group_id FROM memberships WHERE user_id IS ?)', @id)
             groups << Group.new( {id: i[0], name: i[1]})
         end
         return groups
