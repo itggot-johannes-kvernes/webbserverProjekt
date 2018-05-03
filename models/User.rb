@@ -4,9 +4,17 @@ class User < Model
     
 
     def initialize(args)
-        table_name 'users'
+        table_name "users"
         columns ["id", "username"]
         super(args)
+    end
+
+    def self._table_name
+        return "users"
+    end
+
+    def self._columns
+        return ["id", "username"]
     end
 
     # Logs the user in if username and password are correct

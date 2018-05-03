@@ -4,9 +4,17 @@ class Group < Model
     
 
     def initialize(args)
-        table_name 'groups'
+        table_name "groups"
         columns ["id", "name"]
         super(args)
+    end
+
+    def self._table_name
+        return "groups"
+    end
+
+    def self._columns
+        return ["id", "name"]
     end
 
     # Allows a user to join a group

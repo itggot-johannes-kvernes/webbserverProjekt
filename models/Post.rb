@@ -4,9 +4,17 @@ class Post < Model
 
 
     def initialize(args)
-        table_name 'posts'
+        table_name "posts"
         columns ["id", "upload_date", "text", "user_id", "group_id"]
         super(args)
+    end
+
+    def self._table_name
+        return "posts"
+    end
+
+    def self._columns
+        return ["id", "upload_date", "text", "user_id", "group_id"]
     end
 
     # Gets all posts with restrictions from the database
