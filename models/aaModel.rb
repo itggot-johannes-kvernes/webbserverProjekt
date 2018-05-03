@@ -72,5 +72,59 @@ class Model
 
         db.execute(str, to_be_inserted)
     end
+
+    def self.all(*args, &block)
+        # FIXA DENNA
+        db = SQLite3::Database.open('db/db.sqlite')
+        query = "SELECT"
+        if args.length > 0
+            for i in args
+                query += !(i == args[-1]) ? " " + i + "," : " " + i
+            end
+        else
+            query += " *"
+        end
+
+        query += " FROM #{self._table_name}"
+
+        if block_given?
+            block = block.call
+            if block.keys.include? :include
+                query += " INNER JOIN "
+                query += block[:include][0][0].to_s
+                query += " ON "
+                query += block[:include][1][0]
+                query += " IS "
+                query += block[:include][1][1]
+            end
+
+            if block.keys.include? :restrictions
+                for i in block[:restrictions]
+                    query += i == block[:restrictions] ? " WHERE " : " AND "
+                    query += i[0]
+                    query += " IS "
+                    query += i[1]
+                end
+            end
+        end
+
+        p query
+
+        objects = []
+
+        db.results_as_hash = true
+        for i in db.execute(query)
+            p "-----------------------------------------------------"
+            p i
+            hash = {}
+            i.each do |k, v|
+                hash[k.to_sym] = v if self._columns.include?(k) || k == "id"    # i does not contain id
+            end
+            objects << self.new(hash)
+        end
+        db.results_as_hash = false
+
+        return self.class == Post.class ? objects.reverse : objects
+    end
     
 end
