@@ -73,8 +73,11 @@ class Model
         db.execute(str, to_be_inserted)
     end
 
+    # Gets all instances of a user, group or post from database, with restrictions
+    #
+    # @param args [Array<String>] the wanted database columns
+    # @param block [Hash<Array<String>>]
     def self.all(*args, &block)
-        # FIXA DENNA
         db = SQLite3::Database.open('db/db.sqlite')
         query = "SELECT"
         if args.length > 0
