@@ -100,7 +100,7 @@ class Model
 
             if block.keys.include? :restrictions
                 for i in block[:restrictions]
-                    query += i == block[:restrictions] ? " WHERE " : " AND "
+                    query += i == block[:restrictions][0] ? " WHERE " : " AND "
                     query += i[0]
                     query += " IS "
                     query += i[1]
@@ -108,17 +108,13 @@ class Model
             end
         end
 
-        p query
-
         objects = []
 
         db.results_as_hash = true
         for i in db.execute(query)
-            p "-----------------------------------------------------"
-            p i
             hash = {}
             i.each do |k, v|
-                hash[k.to_sym] = v if self._columns.include?(k) || k == "id"    # i does not contain id
+                hash[k.to_sym] = v if self._columns.include?(k) || k == "id"
             end
             objects << self.new(hash)
         end
